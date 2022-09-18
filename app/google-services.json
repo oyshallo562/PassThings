@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "251730005761",
+    "project_id": "digital-con",
+    "storage_bucket": "digital-con.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251730005761:android:a795c8cb7d95370b479500",
+        "android_client_info": {
+          "package_name": "com.degitalcon.passthings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251730005761-1s1ssst80cg3n7eu2ijto1bs7b1c2ajp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.degitalcon.passthings",
+            "certificate_hash": "a6fbee1c513a6aa0de4d6d113ea5afc6f1b6cd4b"
+          }
+        },
+        {
+          "client_id": "251730005761-893k5r0f2h2f2v7m2ekoh8tmk6fn7rn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4xH5vVMnSD2n90swG50P6_lAkcDxnNIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251730005761-893k5r0f2h2f2v7m2ekoh8tmk6fn7rn6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
