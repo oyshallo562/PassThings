@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="347dp"
+    android:layout_height="66dp"
+    android:background="@drawable/profileborder">
+
+    <ImageView
+        android:layout_width="9dp"
+        android:layout_height="17dp"/>
+
+
+
+</LinearLayout>
