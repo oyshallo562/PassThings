@@ -1,22 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.chat.ChatFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#F2F2F2">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:background="@drawable/profileborder"
+        android:layout_marginHorizontal="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="30dp">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_launcher_background" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="20dp"
+            android:layout_marginLeft="25dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/pretendard"
+                android:textFontWeight="1000"
+                android:textSize="18dp"
+                android:textColor="@color/black"
+                android:text="IDIDIDIDIDID" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center"
+                android:src="@drawable/change_id" />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="150dp"
+        android:backgroundTint="#FB636B"
+        android:text="판매목록"
+        android:textColor="@color/white"
+        android:fontFamily="@font/pretendard"
+        android:textSize="16dp"
+        android:textFontWeight="700"
+        tools:ignore="MissingConstraints"/>
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        tools:ignore="MissingConstraints"
+        android:backgroundTint="@color/white"
+        android:text="구매목록"
+        android:textColor="@color/black"
+        android:fontFamily="@font/pretendard"
+        android:textSize="16dp"
+        android:textFontWeight="700"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="150dp" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        tools:ignore="MissingConstraints"
+        android:backgroundTint="@color/white"
+        android:text="거래후기"
+        android:textColor="@color/black"
+        android:fontFamily="@font/pretendard"
+        android:textSize="16dp"
+        android:textFontWeight="700"
+        tools:layout_editor_absoluteX="267dp"
+        tools:layout_editor_absoluteY="150dp" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="230dp" />
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
