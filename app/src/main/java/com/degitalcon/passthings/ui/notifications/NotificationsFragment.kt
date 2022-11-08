@@ -2,44 +2,43 @@ package com.degitalcon.passthings.ui.notifications
 
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationManager
+import android.graphics.Color
+import android.location.Location
+import android.location.LocationRequest
 import android.os.Bundle
-import android.provider.Settings
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.degitalcon.passthings.R
 import com.degitalcon.passthings.databinding.FragmentNotificationsBinding
-import com.degitalcon.passthings.ui.notifications.NotificationsFragment.PERMISSIONS_REQUEST_CODE_object.PERMISSIONS_REQUEST_CODE
-import com.degitalcon.passthings.ui.notifications.GpsTracker
-import net.daum.mf.map.api.MapPOIItem
-import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult.create
+import com.skt.Tmap.*
+import com.skt.Tmap.TMapGpsManager.onLocationChangedCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import org.junit.Before
 
-
-class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
-    object GPS_REQUEST_CODE {
-        const val GPS_ENABLE_REQUEST_CODE = 2001
-    }
-    object PERMISSIONS_REQUEST_CODE_object {
-        val PERMISSIONS_REQUEST_CODE = 100
-    }
-    var REQUIRED_PERMISSIONS = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
+//@Config(manifest = Config.NONE)
+class NotificationsFragment : Fragment(R.layout.fragment_notifications), onLocationChangedCallback {
     private var _binding: FragmentNotificationsBinding? = null
+    var tMapView: TMapView? = null //티맵 함수 정의
+    var gps: TMapGpsManager? = null //티맵 gps 매니저 변수 정의
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+
+
+
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -50,195 +49,82 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val mapView = MapView(context)
-        //binding.mapView.addView(mapView)
-        val mapViewContainer: ViewGroup = root.findViewById<ViewGroup>(R.id.map_view)
 
-        mapViewContainer.addView(mapView)
+        val linearLayoutTmap = root.findViewById(R.id.linearLayoutTmap) as LinearLayout
+        tMapView = TMapView(context)
+        tMapView!!.setSKTMapApiKey("l7xxb00f8d9a0a484559993bcb6887ffeee1")
+        linearLayoutTmap.addView(tMapView)
 
-        if (checkLocationServicesStatus()) {
-            checkRunTimePermission()
-        } else {
-            showDialogForLocationServiceSetting()
-        }
+        gps = TMapGpsManager(context) // 생성자 함수 정의
 
-        val gpsTracker = context?.let { GpsTracker(it) }
-
-        val latitude = gpsTracker?.getLatitude()
-        val longitude = gpsTracker?.getLongitude()
-        if (mapView.parent != null) (mapView.parent as ViewGroup).removeView(mapView)
-        mapViewContainer.addView(mapView)
-        mapView.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+       // gps!!.minTime = 1000 //현재 위치를 찾을 최소 시간 (밀리초)
+       /// gps!!.minDistance = 5f //현재 위치를 갱신할 최소 거리
+        gps!!.provider = TMapGpsManager.GPS_PROVIDER //위치 제공자 설정
+        gps!!.OpenGps() //네트워크 위치 탐색 허용
 
 
-        val marker = MapPOIItem()
-
-        //맵 포인트 위도경도 설정
-
-        //맵 포인트 위도경도 설정
-        val mapPoint = MapPoint.mapPointWithGeoCoord(latitude!!, longitude!!)
-        marker.itemName = "Marker"
-        marker.tag = 0
-        marker.mapPoint = mapPoint
-        marker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공하는 BluePin 마커 모양.
-
-        marker.selectedMarkerType =
-            MapPOIItem.MarkerType.RedPin // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        //setlocationthread() //쓰레드를 통해 현재 위치 탐색을 하는 함수 실행
 
 
-        mapView.addPOIItem(marker)
-        if (!checkLocationServicesStatus()) {
-            showDialogForLocationServiceSetting()
-        } else {
-            checkRunTimePermission()
-        }
         return root
     }
 
+    private fun setlocationthread() {
+        gps!!.provider = TMapGpsManager.GPS_PROVIDER //현재위치 찾을 방법(휴대폰 gps)
+        gps!!.setMinTime(500);
+        //gps!!.setMinDistance(5);
+        gps!!.OpenGps() //gps 위치 탐색 허용
+        gpsLocationthread() //쓰레드를 실행해 위치 탐색
+        //ThreadActivity.WaitDlg.stop(dlg) //쓰레드 완료시 대화상자 닫음
+        if (lat == 0.0 || lon == 0.0) { //위치를 불러왔는지 확인
+           // Toast.makeText(context, "위치를 불러오지 못했습니다. 다시한번 실행해주세요", Toast.LENGTH_SHORT).show()
+            Log.d("위치를 불러오지 못했습니다. 다시한번 실행해주세요", "위치를 불러오지 못했습니다. 다시한번 실행해주세요")
+        } else tMapView!!.setCenterPoint(lat!!, lon!!)
+        gps!!.CloseGps()
+    }
 
-    /*
-     * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
-     */
-    override fun onRequestPermissionsResult(
-        permsRequestCode: Int,
-        permissions: Array<String?>,
-        grandResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults)
-        if (permsRequestCode == NotificationsFragment.PERMISSIONS_REQUEST_CODE_object.PERMISSIONS_REQUEST_CODE && grandResults.size == REQUIRED_PERMISSIONS.size) {
-
-            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
-            var check_result = true
-
-
-            // 모든 퍼미션을 허용했는지 체크합니다.
-            for (result: Int in grandResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    check_result = false
-                    break
-                }
-            }
-            if (check_result) {
-
-                //위치 값을 가져올 수 있음
-            } else {
-                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        context as Activity,
-                        REQUIRED_PERMISSIONS[0]
-                    )
-                    || ActivityCompat.shouldShowRequestPermissionRationale(
-                        context as Activity,
-                        REQUIRED_PERMISSIONS[1]
-                    )
-                ) {
-                    Toast.makeText(
-                        context as Activity,
-                        "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    //finish()
-                } else {
-                    Toast.makeText(
-                        context as Activity,
-                        "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+    private fun gpsLocationthread()
+    {//위치탐색 쓰레드
+        //위치탐색 쓰레드
+        for (i in 0..9) {
+            try {
+                Thread.sleep(1000)
+            } catch (e: InterruptedException) {
+                setlocationthread()
             }
         }
     }
+    override fun onLocationChange(location: Location) {
+        lat = location.latitude
+        lon = location.longitude
+        if (lat == 0.0 || lon == 0.0) { //위치를 불러왔는지 확인
+            // Toast.makeText(context, "위치를 불러오지 못했습니다. 다시한번 실행해주세요", Toast.LENGTH_SHORT).show()
+            Log.d("위치를 불러오지 못했습니다. 다시한번 실행해주세요", "위치를 불러오지 못했습니다. 다시한번 실행해주세요")
+        } else {
 
-    fun checkRunTimePermission() {
+            Log.d("lat!!!!!", lat.toString())
+            Log.d("lon!!!!!", lon.toString())
 
-        //런타임 퍼미션 처리
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
-            context as Activity,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(
-            context as Activity,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
-            hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED
-        ) {
+            tMapView!!.setCenterPoint(lat!!, lon!!)
+            tMapView!!.setZoomLevel(15)
 
-            // 2. 이미 퍼미션을 가지고 있다면
-            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
+            var tpoint = TMapPoint(lat, lon)
+            var tItem = TMapMarkerItem()
+            tItem.setTMapPoint(tpoint)
+            tItem.setVisible(TMapMarkerItem.VISIBLE)
 
+            //Bitmap bitmap = itmapFactory.decodeResource(context.getResources(),R.drawable.Icon);
+            //tItem.setIcon(bitmap);
+            // 핀모양으로 된 마커를 사용할 경우 마커 중심을 하단 핀 끝으로 설정.
+            //tItem.setPosition(0.5 1.0)
+            tMapView!!.addMarkerItem("1", tItem)
 
-            // 3.  위치 값을 가져올 수 있음
-        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
-
-            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    context as Activity,
-                    REQUIRED_PERMISSIONS[0]
-                )
-            ) {
-
-                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-                Toast.makeText(context, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG)
-                    .show()
-                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult 에서 수신됩니다.
-            } else {
-                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
-                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-            }
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                REQUIRED_PERMISSIONS,
-                NotificationsFragment.PERMISSIONS_REQUEST_CODE_object.PERMISSIONS_REQUEST_CODE
-            )
         }
+
+
+
+        // gps!!.CloseGps()
     }
-
-
-    //여기부터는 GPS 활성화를 위한 메소드들
-    private fun showDialogForLocationServiceSetting() {
-        val builder = context?.let { AlertDialog.Builder(it) }
-        builder!!.setTitle("위치 서비스 비활성화")
-        builder.setMessage(
-            "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
-                    + "위치 설정을 수정하실래요?"
-        )
-        builder.setCancelable(true)
-        builder.setPositiveButton("설정") { dialog, id ->
-            val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(callGPSSettingIntent, NotificationsFragment.GPS_REQUEST_CODE.GPS_ENABLE_REQUEST_CODE)
-        }
-        builder.setNegativeButton(
-            "취소"
-        ) { dialog, id -> dialog.cancel() }
-        builder.create().show()
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            NotificationsFragment.GPS_REQUEST_CODE.GPS_ENABLE_REQUEST_CODE ->
-                //사용자가 GPS 활성 시켰는지 검사
-                if (checkLocationServicesStatus()) {
-                    if (checkLocationServicesStatus()) {
-                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음")
-                        checkRunTimePermission()
-                        return
-                    }
-                }
-        }
-    }
-
-    fun checkLocationServicesStatus(): Boolean {
-        val locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-    }
-       // return root
 }

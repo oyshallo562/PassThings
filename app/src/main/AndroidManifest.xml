@@ -23,6 +23,9 @@
             android:name=".SignupActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.home.ArticleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.AddArticleActivity"
             android:exported="false" />
         <activity
@@ -42,8 +45,9 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCT_qKCox1GF5YriSTuEmPjFnBSNtdkyns" />
-        <meta-data android:name="com.kakao.sdk.AppKey" android:value="b15ae94b1f71dbccf8ba6c51c35ced1e"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCT_qKCox1GF5YriSTuEmPjFnBSNtdkyns" />
     </application>
 
 </manifest>
