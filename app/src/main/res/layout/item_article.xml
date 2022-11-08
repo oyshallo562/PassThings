@@ -31,6 +31,22 @@
         app:layout_constraintVertical_bias="0.2" />
 
     <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:fontFamily="@font/pretendard"
+        android:text="11월 11일"
+        android:textColor="@color/black"
+        android:textFontWeight="700"
+        android:textSize="16dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleTextView"
+        app:layout_constraintHorizontal_bias="0.372"/>
+
+    <TextView
         android:id="@+id/priceTextView"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
@@ -46,16 +62,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45" />
 
+    <ImageView
+        android:id="@+id/iv_pass_2"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_rectangle_21"
+        app:layout_constraintTop_toTopOf="@id/priceTextView"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="20dp"
+        />
+
     <Button
-        android:id="@+id/dateTextView"
-        android:layout_width="88dp"
-        android:layout_height="27dp"
+        android:id="@+id/passTextview"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:backgroundTint="#FB636B"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.872"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.506" />
+        app:layout_constraintTop_toTopOf="@id/iv_pass_2"
+        app:layout_constraintBottom_toBottomOf="@id/iv_pass_2"
+        app:layout_constraintLeft_toLeftOf="@id/iv_pass_2"
+        app:layout_constraintRight_toRightOf="@id/iv_pass_2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

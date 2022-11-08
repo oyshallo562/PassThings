@@ -5,7 +5,9 @@ data class ArticleModel(
     val title: String,
     val createdAt: Long,
     val price: String,
+    val description :String,
+    val tag :String,
     val imageURL: String
 ) {
-    constructor(): this("", "", 0, "", "")
+    constructor(): this("", "", 0, "", "","", "")
 }

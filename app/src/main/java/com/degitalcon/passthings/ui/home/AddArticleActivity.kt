@@ -60,10 +60,16 @@ class AddArticleActivity: AppCompatActivity() {
         findViewById<TextView>(R.id.submitButton).setOnClickListener {
             val title = findViewById<EditText>(R.id.titleEditText).text.toString()
             val price = findViewById<EditText>(R.id.priceEditText).text.toString()
+            val description = findViewById<EditText>(R.id.descriptionEditText).text.toString()
+            val tag = findViewById<EditText>(R.id.tagEdittext).text.toString()
             val sellerId = auth.currentUser?.uid.orEmpty()
 
             if (title.isEmpty() || price.isEmpty()) {
                 Toast.makeText(this, "제목 및 가격 정보를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (description.isEmpty()) {
+                Toast.makeText(this, "제품에 대한 설명을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -71,14 +77,14 @@ class AddArticleActivity: AppCompatActivity() {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri ->
-                        uploadArticle(sellerId, title, price, uri)
+                        uploadArticle(sellerId, title, price, description,tag,uri)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 )
             } else {
-                uploadArticle(sellerId, title, price, "")
+                uploadArticle(sellerId, title, price, description,tag,"")
             }
 
         }
@@ -103,8 +109,8 @@ class AddArticleActivity: AppCompatActivity() {
 
     }
 
-    private fun uploadArticle(sellerId: String, title: String, price: String, imageUrl: String) {
-        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), price, imageUrl)
+    private fun uploadArticle(sellerId: String, title: String, price: String, description :String,tag :String,imageUrl: String) {
+        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), price, description,tag,imageUrl)
         articleDB.push().setValue(model)
         Toast.makeText(this, "아이템이 등록되었습니다.", Toast.LENGTH_SHORT).show()
         finish()

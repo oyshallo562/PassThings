@@ -20,9 +20,12 @@ class ArticleAdapter(val onItemClicked: (ArticleModel) -> Unit): ListAdapter<Art
             val date = Date(articleModel.createdAt)
             val priceFormat = DecimalFormat("#,###")
 
+
             binding.titleTextView.text = articleModel.title
             binding.dateTextView.text = format.format(date).toString()
             binding.priceTextView.text = "${priceFormat.format(articleModel.price.toInt())}원"
+            binding.passTextview.text = "1번째 PASS"
+            //To-Do 카운트 db 불러와서 넣기
 
             if (articleModel.imageURL.isNotEmpty()) {
                 Glide.with(binding.thumbnailImageView)

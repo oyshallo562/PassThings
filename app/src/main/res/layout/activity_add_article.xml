@@ -88,6 +88,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <EditText
+        android:id="@+id/descriptionEditText"
         android:layout_width="347dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard"
@@ -99,6 +100,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <EditText
+        android:id="@+id/tagEdittext"
         android:layout_width="347dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard"
