@@ -6,98 +6,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#F2F2F2">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
         android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:background="@drawable/profileborder"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:background="@drawable/ic_launcher_background"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="30dp">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_launcher_background" />
+    <TextView
+        android:id="@+id/Nickname_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nickname"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView"/>
 
+    <ImageView
+        android:contentDescription="edit_profile"
+        android:id="@+id/Edit_Profile_Button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_edit_profile"
+        app:layout_constraintStart_toEndOf="@id/Nickname_textView"
+        app:layout_constraintTop_toTopOf="@id/Nickname_textView"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="20dp"
-            android:layout_marginLeft="25dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_gravity="center"
-                android:fontFamily="@font/pretendard"
-                android:textFontWeight="1000"
-                android:textSize="18dp"
-                android:textColor="@color/black"
-                android:text="IDIDIDIDIDID" />
-
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center"
-                android:src="@drawable/change_id" />
-
-
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <Button
-        android:layout_width="110dp"
-        android:layout_height="60dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="150dp"
-        android:backgroundTint="#FB636B"
-        android:text="판매목록"
-        android:textColor="@color/white"
-        android:fontFamily="@font/pretendard"
-        android:textSize="16dp"
-        android:textFontWeight="700"
-        tools:ignore="MissingConstraints"/>
-
-    <Button
-        android:layout_width="110dp"
-        android:layout_height="60dp"
-        tools:ignore="MissingConstraints"
-        android:backgroundTint="@color/white"
-        android:text="구매목록"
-        android:textColor="@color/black"
-        android:fontFamily="@font/pretendard"
-        android:textSize="16dp"
-        android:textFontWeight="700"
-        tools:layout_editor_absoluteX="141dp"
-        tools:layout_editor_absoluteY="150dp" />
-
-    <Button
-        android:layout_width="110dp"
-        android:layout_height="60dp"
-        tools:ignore="MissingConstraints"
-        android:backgroundTint="@color/white"
-        android:text="거래후기"
-        android:textColor="@color/black"
-        android:fontFamily="@font/pretendard"
-        android:textSize="16dp"
-        android:textFontWeight="700"
-        tools:layout_editor_absoluteX="267dp"
-        tools:layout_editor_absoluteY="150dp" />
-
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/BuyItem_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="230dp" />
+        android:layout_marginTop="5dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/Nickname_textView"
+        />
+
 
 
 

@@ -18,7 +18,7 @@
 
     <EditText
         android:id="@+id/ID"
-        android:layout_width="306dp"
+        android:layout_width="290dp"
         android:layout_height="45dp"
         android:layout_marginTop="50dp"
         android:background="@drawable/border"
@@ -32,11 +32,12 @@
 
     <EditText
         android:id="@+id/PW"
-        android:layout_width="306dp"
+        android:layout_width="290dp"
         android:layout_height="45dp"
         android:layout_marginTop="18dp"
         android:background="@drawable/border"
         android:fontFamily="@font/pretendard"
+        android:inputType="textPassword"
         android:hint="   비밀번호"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
