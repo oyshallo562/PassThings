@@ -19,12 +19,15 @@ class ArticleAdapter(val onItemClicked: (ArticleModel) -> Unit): ListAdapter<Art
             val format = SimpleDateFormat("MM월 dd일")
             val date = Date(articleModel.createdAt)
             val priceFormat = DecimalFormat("#,###")
-
+            val pass = when(articleModel.Pass == 0) {
+                true -> "NEW"
+                false -> this.toString()
+            }
 
             binding.titleTextView.text = articleModel.title
             binding.dateTextView.text = format.format(date).toString()
             binding.priceTextView.text = "${priceFormat.format(articleModel.price.toInt())}원"
-            binding.passTextview.text = "1번째 PASS"
+            binding.passTextview.text = pass
             //To-Do 카운트 db 불러와서 넣기
 
             if (articleModel.imageURL.isNotEmpty()) {

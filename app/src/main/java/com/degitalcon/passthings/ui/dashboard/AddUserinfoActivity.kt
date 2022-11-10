@@ -1,26 +1,28 @@
-package com.degitalcon.passthings.ui.home
+package com.degitalcon.passthings.ui.dashboard
 
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import com.degitalcon.passthings.DBKey.Companion.DB_ARTICLES
+import com.degitalcon.passthings.DBKey
 import com.degitalcon.passthings.R
+import com.degitalcon.passthings.ui.home.ArticleModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
-class AddArticleActivity: AppCompatActivity() {
+class AddUserinfoActivity : AppCompatActivity() {
 
     private var selectedUri: Uri? = null
     private val auth: FirebaseAuth by lazy {
@@ -30,15 +32,15 @@ class AddArticleActivity: AppCompatActivity() {
     private val storage: FirebaseStorage by lazy {
         Firebase.storage
     }
-
-    private val articleDB: DatabaseReference by lazy {
-        Firebase.database.reference.child(DB_ARTICLES)
-    }
-
+    private val firebasefirestore = FirebaseFirestore.getInstance()
+   // TODO: Replace with your own app ID
+   // private val UserInfoDB= firebasefirestore?.collection("UserCount")!!.document(auth.uid.toString())
+   private val UserInfoDB: DatabaseReference by lazy {
+       Firebase.database.reference.child(DBKey.DB_USER_INFO)
+   }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_article)
-
+        setContentView(R.layout.activity_add_userinfo)
 
         findViewById<ImageButton>(R.id.imageAddButton).setOnClickListener {
             when {
@@ -63,18 +65,10 @@ class AddArticleActivity: AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.submitButton).setOnClickListener {
-            val title = findViewById<EditText>(R.id.titleEditText).text.toString()
-            val price = findViewById<EditText>(R.id.priceEditText).text.toString()
-            val description = findViewById<EditText>(R.id.descriptionEditText).text.toString()
-            val tag = findViewById<EditText>(R.id.tagEdittext).text.toString()
-            val sellerId = auth.currentUser?.uid.orEmpty()
+            val name = findViewById<EditText>(R.id.nameEditText).text.toString()
 
-            if (title.isEmpty() || price.isEmpty()) {
-                Toast.makeText(this, "제목 및 가격 정보를 입력해주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (description.isEmpty()) {
-                Toast.makeText(this, "제품에 대한 설명을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty()) {
+                Toast.makeText(this, "이름 또는 닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -82,14 +76,14 @@ class AddArticleActivity: AppCompatActivity() {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri ->
-                        uploadArticle(sellerId, title, price, description,tag,uri,0)
+                        uploadUserinfo(name,auth.uid.toString(),uri)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 )
             } else {
-                uploadArticle(sellerId, title, price, description,tag,"",0)
+                uploadUserinfo(name,auth.uid.toString(),"")
             }
 
         }
@@ -97,11 +91,11 @@ class AddArticleActivity: AppCompatActivity() {
 
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
         val fileName = "${System.currentTimeMillis()}.png"
-        storage.reference.child("article/photo").child(fileName)
+        storage.reference.child("user/photo").child(fileName)
             .putFile(uri)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    storage.reference.child("article/photo").child(fileName).downloadUrl
+                    storage.reference.child("user/photo").child(fileName).downloadUrl
                         .addOnSuccessListener { uri ->
                             successHandler(uri.toString())
                         }.addOnFailureListener {
@@ -114,10 +108,10 @@ class AddArticleActivity: AppCompatActivity() {
 
     }
 
-    private fun uploadArticle(sellerId: String, title: String, price: String, description :String,tag :String,imageUrl: String,Pass :Int) {
-        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), price, description,tag,imageUrl,Pass)
-        articleDB.push().setValue(model)
-        Toast.makeText(this, "아이템이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+    private fun uploadUserinfo(name: String, uid: String, imageUrl: String) {
+        val model = UserInfoModel(name, uid, imageUrl)
+        UserInfoDB.child(auth.uid.toString()).setValue(model)
+        Toast.makeText(this, "사용자 정보가 등록되었습니다.", Toast.LENGTH_SHORT).show()
         finish()
     }
 
@@ -177,4 +171,7 @@ class AddArticleActivity: AppCompatActivity() {
             .create()
             .show()
     }
+
+
+
 }

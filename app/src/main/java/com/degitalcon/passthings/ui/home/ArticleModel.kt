@@ -7,7 +7,8 @@ data class ArticleModel(
     val price: String,
     val description :String,
     val tag :String,
-    val imageURL: String
+    val imageURL: String,
+    val Pass: Int
 ) {
-    constructor(): this("", "", 0, "", "","", "")
+    constructor(): this("", "", 0, "", "","", "",0)
 }
