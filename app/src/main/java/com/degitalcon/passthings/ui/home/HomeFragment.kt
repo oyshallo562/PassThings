@@ -9,7 +9,6 @@ import com.degitalcon.passthings.DBKey.Companion.CHILD_CHAT
 import com.degitalcon.passthings.DBKey.Companion.DB_ARTICLES
 import com.degitalcon.passthings.DBKey.Companion.DB_USER
 import com.degitalcon.passthings.R
-import com.degitalcon.passthings.ui.chat.ChatListItem
 import com.degitalcon.passthings.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
