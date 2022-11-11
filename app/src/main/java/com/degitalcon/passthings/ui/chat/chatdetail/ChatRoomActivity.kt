@@ -114,9 +114,23 @@ class ChatRoomActivity: AppCompatActivity() {
 
             if (ItemId != null) {
                 CompleteArticleDB.child(ItemId).setValue(ArricleDTO)
+                ArticleDB!!.removeValue()
+                UserDB.get().addOnSuccessListener {
+                    it.children.forEach { it1 ->
+                        val model = it1.getValue(ChatListItem::class.java)
+
+                        UserLocateDB = Firebase.database.reference.child(DB_USER_LOCATE)
+                            .child(model?.sellerId.toString())
+                        UserLocateDB!!.removeValue()
+                        UserLocateDB = Firebase.database.reference.child(DB_USER_LOCATE)
+                            .child(model?.buyerId.toString())
+                        UserLocateDB!!.removeValue()
+                    }
+                }
+                UserDB.child(ItemId).removeValue()
             }
             else {
-                Log.e("firebase", "Error getting data")
+                Log.e("firebase", "Error getting ItemId")
             }
 
         }
