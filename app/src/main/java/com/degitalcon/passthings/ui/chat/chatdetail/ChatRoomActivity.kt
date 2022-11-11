@@ -41,32 +41,52 @@ class ChatRoomActivity: AppCompatActivity() {
     private val UserInfoDB: DatabaseReference by lazy {
         Firebase.database.reference.child(DBKey.DB_USER_INFO).child(auth.uid.toString())
     }
+    /*
     private val CompleteArticleDB: DatabaseReference by lazy {
         Firebase.database.reference.child(DBKey.DB_ARTICLES_COMPIE).child(auth.uid.toString())
     }
+     */
 
-    private var ArticleDB: DatabaseReference? = null
+   //private var ArticleDB: DatabaseReference? = null
     private var UserLocateDB: DatabaseReference? = null
     private var chatDB: DatabaseReference? = null
     private val chatList = mutableListOf<ChatItem>()
     private val adapter = ChatItemAdapter()
     private var name: String? = null
-    private var chatKey: String? = null
-    private var ArricleDTO = ArticleModelTmp()
+    //private var chatKey: String? = null
+    //private var ArricleDTO = ArticleModelTmp()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatroom)
-        chatKey = intent.getStringExtra("chatKey")
-        val ItemId = intent.getStringExtra("ItemId")
-        ArticleDB = Firebase.database.reference.child(DBKey.DB_ARTICLES).child(ItemId.toString())
+        //val ItemId = intent.getStringExtra("ItemId")
+        //ArticleDB = Firebase.database.reference.child(DBKey.DB_ARTICLES).child(ItemId.toString())
+        val chatKey = intent.getLongExtra("chatKey", -1)
+        //Log.d("ChatRoomActivity", "chatKey = $chatKey")
 
-        UserInfoDB.child("name").get().addOnSuccessListener {
-            name = it.value.toString()
-            if(name == null) {
-                name = auth.uid.toString()
+        findViewById<RecyclerView>(R.id.chatRecyclerView).adapter = adapter
+        findViewById<RecyclerView>(R.id.chatRecyclerView).layoutManager = LinearLayoutManager(this)
+
+        chatDB = Firebase.database.reference.child(DB_CHATS).child("$chatKey")
+        chatDB!!.addChildEventListener(object: ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatItem = snapshot.getValue(ChatItem::class.java)
+                chatItem ?: return
+                Log.d("ChatRoomActivity", "${chatItem.message}, ${chatItem.senderId}" )
+                chatList.add(chatItem)
+                adapter.submitList(chatList)
+                adapter.notifyDataSetChanged()
             }
-        }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {}
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+
+        })
+
 
        UserDB.get().addOnSuccessListener {
             it.children.forEach { it1 ->
@@ -80,11 +100,17 @@ class ChatRoomActivity: AppCompatActivity() {
        }
 
         findViewById<Button>(R.id.sendButton).setOnClickListener {
-            val chatItem = ChatItem(
-                senderId = name.toString(),
-                message = findViewById<EditText>(R.id.messageEditText).text.toString()
-            )
-            chatDB!!.push().setValue(chatItem)
+            UserInfoDB.child("name").get().addOnSuccessListener {
+                name = it.value.toString()
+                if(name == "" || name == "null") {
+                    name = auth.uid.toString()
+                }
+                val chatItem = ChatItem(
+                    senderId = name.toString(),
+                    message = findViewById<EditText>(R.id.messageEditText).text.toString()
+                )
+                chatDB!!.push().setValue(chatItem)
+            }
         }
 
         findViewById<Button>(R.id.addLocateButton).setOnClickListener {
@@ -97,7 +123,7 @@ class ChatRoomActivity: AppCompatActivity() {
                 UserLocateDB!!.setValue(UserLocate)
             finish()
         }
-
+        /*
         findViewById<Button>(R.id.Complete_Btn).setOnClickListener {
             ArticleDB!!.get().addOnSuccessListener {
                 ArricleDTO.Pass = it.child("Pass").value.toString().toInt() + 1
@@ -133,7 +159,10 @@ class ChatRoomActivity: AppCompatActivity() {
                 Log.e("firebase", "Error getting ItemId")
             }
 
+
         }
+        */
+
 
 
     }

@@ -32,8 +32,6 @@ class DashboardFragment : Fragment() {
         Firebase.auth
     }
 
-
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -53,12 +51,15 @@ class DashboardFragment : Fragment() {
 
         UserInfoDB.child("name").get().addOnSuccessListener {
             name = it.value.toString()
+            if(name == "null" || name == "") {
+                name = "이름을 설정해주세요"
+            }
             root.findViewById<TextView>(R.id.Nickname_textView).text = name
         }
 
         UserInfoDB.child("profileImage").get().addOnSuccessListener {
             val imageURL = it.value.toString()
-            if (name != null) {
+            if (imageURL != "null" && imageURL != "") {
                 Glide.with(binding.imageView.context)
                     .load(imageURL)
                     .into(binding.imageView)

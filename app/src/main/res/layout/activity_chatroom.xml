@@ -11,7 +11,7 @@
         android:layout_marginEnd="10dp"
         android:text="위치 공유하기"
 
-        android:backgroundTint="@color/orange"
+        android:backgroundTint="@color/th"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addLocateButton"
         android:backgroundTint="@color/black"
+        android:visibility="gone"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
@@ -49,7 +50,7 @@
         android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/orange"
+        android:backgroundTint="@color/th"
         android:text="전송"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

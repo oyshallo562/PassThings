@@ -23,7 +23,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/border"
         android:fontFamily="@font/pretendard"
-        android:hint="   아이디"
+        android:hint="   이메일"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,30 +44,6 @@
         app:layout_constraintTop_toBottomOf="@+id/ID"
         tools:ignore="MissingConstraints" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PW"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="87dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/pretendard"
-        android:text="비밀번호 보기"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.297"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PW"
-        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/LoginButton"
