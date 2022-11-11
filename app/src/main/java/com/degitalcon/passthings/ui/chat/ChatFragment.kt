@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.degitalcon.passthings.DBKey.Companion.CHILD_CHAT
+import com.degitalcon.passthings.DBKey.Companion.DB_CHATS
 import com.degitalcon.passthings.DBKey.Companion.DB_USER
 import com.degitalcon.passthings.R
 import com.degitalcon.passthings.databinding.FragmentChatBinding
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -28,6 +30,7 @@ class ChatFragment: Fragment(R.layout.fragment_chat) {
         Firebase.auth
     }
 
+    private var ChatsDB: DatabaseReference?= null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -36,8 +39,12 @@ class ChatFragment: Fragment(R.layout.fragment_chat) {
 
         chatListAdapter = ChatListAdapter(onItemClicked = { chatRoom ->
             context?.let {
+                ChatsDB = Firebase.database.reference.child(DB_CHATS).child(chatRoom.key.toString())
+                val itemId = ChatsDB!!.key
                 val intent = Intent(it, ChatRoomActivity::class.java)
+
                 intent.putExtra("chatKey", chatRoom.key)
+                intent.putExtra("ItemId", itemId)
                 startActivity(intent)
             }
         })

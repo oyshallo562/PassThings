@@ -3,6 +3,7 @@ package com.degitalcon.passthings
 class DBKey {
     companion object {
         const val DB_ARTICLES = "Articles"
+        const val DB_ARTICLES_COMPIE = "Articles_Complete"
         const val DB_USER = "Users"
         const val DB_USER_INFO = "User_Info"
         const val DB_USER_LOCATE = "User_Locate"

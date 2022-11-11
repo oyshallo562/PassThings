@@ -51,13 +51,11 @@ class DashboardFragment : Fragment() {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Read from the database
-
         UserInfoDB.child("name").get().addOnSuccessListener {
-            // dataSnapshot이 it으로 반환됨.
             name = it.value.toString()
             root.findViewById<TextView>(R.id.Nickname_textView).text = name
         }
+
         UserInfoDB.child("profileImage").get().addOnSuccessListener {
             val imageURL = it.value.toString()
             if (name != null) {

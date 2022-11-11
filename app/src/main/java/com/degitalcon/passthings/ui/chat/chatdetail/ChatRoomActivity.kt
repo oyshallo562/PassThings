@@ -18,6 +18,7 @@ import com.degitalcon.passthings.DBKey.Companion.DB_USER_LOCATE
 import com.degitalcon.passthings.R
 import com.degitalcon.passthings.ui.chat.ChatFragment
 import com.degitalcon.passthings.ui.chat.ChatListItem
+import com.degitalcon.passthings.ui.home.ArticleModel
 import com.degitalcon.passthings.ui.notifications.NotificationsFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -40,15 +41,25 @@ class ChatRoomActivity: AppCompatActivity() {
     private val UserInfoDB: DatabaseReference by lazy {
         Firebase.database.reference.child(DBKey.DB_USER_INFO).child(auth.uid.toString())
     }
+    private val CompleteArticleDB: DatabaseReference by lazy {
+        Firebase.database.reference.child(DBKey.DB_ARTICLES_COMPIE).child(auth.uid.toString())
+    }
+
+    private var ArticleDB: DatabaseReference? = null
     private var UserLocateDB: DatabaseReference? = null
     private var chatDB: DatabaseReference? = null
     private val chatList = mutableListOf<ChatItem>()
     private val adapter = ChatItemAdapter()
     private var name: String? = null
+    private var chatKey: String? = null
+    private var ArricleDTO = ArticleModelTmp()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatroom)
+        chatKey = intent.getStringExtra("chatKey")
+        val ItemId = intent.getStringExtra("ItemId")
+        ArticleDB = Firebase.database.reference.child(DBKey.DB_ARTICLES).child(ItemId.toString())
 
         UserInfoDB.child("name").get().addOnSuccessListener {
             name = it.value.toString()
@@ -86,6 +97,30 @@ class ChatRoomActivity: AppCompatActivity() {
                 UserLocateDB!!.setValue(UserLocate)
             finish()
         }
+
+        findViewById<Button>(R.id.Complete_Btn).setOnClickListener {
+            ArticleDB!!.get().addOnSuccessListener {
+                ArricleDTO.Pass = it.child("Pass").value.toString().toInt() + 1
+                ArricleDTO.sellerId = it.child("sellerId").value.toString()
+                ArricleDTO.createdAt = it.child("createdAt").value.toString().toLong()
+                ArricleDTO.imageURL = it.child("imageURL").value.toString()
+                ArricleDTO.description = it.child("description").value.toString()
+                ArricleDTO.title = it.child("title").value.toString()
+                ArricleDTO.tag = it.child("tag").value.toString()
+                ArricleDTO.price = it.child("price").value.toString()
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+
+            if (ItemId != null) {
+                CompleteArticleDB.child(ItemId).setValue(ArricleDTO)
+            }
+            else {
+                Log.e("firebase", "Error getting data")
+            }
+
+        }
+
 
     }
 }
